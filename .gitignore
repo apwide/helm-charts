@@ -1,0 +1,5 @@
+.idea/
+.env
+**/config-local.yaml
+local/
+**/k8s-golive-monitor-*tgz
