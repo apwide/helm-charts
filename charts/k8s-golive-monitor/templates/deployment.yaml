@@ -37,6 +37,58 @@ spec:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+          {{- if .Values.golive.auth.existingSecret }}
+          {{- if .Values.golive.auth.usernameKey }}
+            - name: GOLIVE_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.golive.auth.existingSecret }}
+                  key: {{ .Values.golive.auth.usernameKey }}
+                  optional: false
+          {{ end }}
+          {{- if .Values.golive.auth.passwordKey }}
+            - name: GOLIVE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.golive.auth.existingSecret }}
+                  key: {{ .Values.golive.auth.passwordKey }}
+                  optional: true
+          {{- end }}
+          {{- if .Values.golive.auth.tokenKey }}
+            - name: GOLIVE_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.golive.auth.existingSecret }}
+                  key: {{ .Values.golive.auth.tokenKey }}
+                  optional: false
+          {{ end }}
+          {{- else if or .Values.golive.auth.username .Values.golive.auth.token }}
+          {{- if .Values.golive.auth.token }}
+            - name: GOLIVE_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "k8s-golive-monitor.fullname" . }}
+                  key: token
+                  optional: false
+          {{- end }}
+          {{- if .Values.golive.auth.username }}
+          - name: GOLIVE_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: {{ include "k8s-golive-monitor.fullname" . }}
+                key: username
+                optional: false
+          {{- end }}
+          {{- if .Values.golive.auth.password }}
+          - name: GOLIVE_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: {{ include "k8s-golive-monitor.fullname" . }}
+                key: password
+                optional: false
+          {{- end }}
+          {{- end }}
           ports:
             - name: http
               containerPort: 9090

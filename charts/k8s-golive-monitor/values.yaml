@@ -104,17 +104,27 @@ tolerations: []
 affinity: {}
 
 golive:
+  auth:
+    username: ""
+    password: ""
+    token: ""
+
+    existingSecret: ""
+    tokenKey: ""
+    usernameKey: ""
+    passwordKey: ""
+
   config:
     golive:
       url: https://golive.apwide.net/api
 #      token: "AAA"
     listeners:
-      - id: sample-config
-        namespace: default
-#        category:
-#          value: "Dev"
-#        application:
-#          label: "Golive"
-        autoCreate: true
+#      - id: sample-config
+#        namespace: default
+##        category:
+##          value: "Dev"
+##        application:
+##          label: "Golive"
+#        autoCreate: true
 
 

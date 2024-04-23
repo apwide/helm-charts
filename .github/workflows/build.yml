@@ -4,32 +4,40 @@ on:
   workflow_dispatch:
 
   push:
-    branches:
-      - main
+#    branches:
+#      - main
 
 jobs:
   build:
     name: Build
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        id: checkout
+      - id: checkout
         uses: actions/checkout@v4
         with:
           fetch-depth: 0 # important parameter
 
-      - name: Configure Git
+      - id: configure-git
         run: |
           git config user.name "$GITHUB_ACTOR"
           git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
 
-      - name: Set up Helm
+      - id: setup-helm
         uses: azure/setup-helm@v4
         with:
           version: v3.12.0
 
-      - name: Run chart-releaser
+      - id: install-unittest
+        run: |
+          helm plugin install https://github.com/helm-unittest/helm-unittest.git
+
+      - id: test
+        run: |
+          helm unittest ./charts/k8s-golive-monitor
+
+      - id: release
         uses: helm/chart-releaser-action@v1.6.0
+        if: ${{ github.ref == 'refs/heads/main' }}
 #        with:
 #          charts_dir: deployments/charts/k8s-golive-monitor
         env:
