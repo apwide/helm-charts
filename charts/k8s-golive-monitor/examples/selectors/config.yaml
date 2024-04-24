@@ -1,0 +1,14 @@
+golive:
+  offline: true
+  yaml: true
+
+listeners:
+  - id: frontend-monitoring
+    selectors:
+      - labels:
+          app: nginx
+          my.company.com/label: "custom-pod-label"
+        labelQuery: app in (nginx)
+
+    autoCreate: true
+

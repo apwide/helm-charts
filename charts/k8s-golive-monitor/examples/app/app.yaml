@@ -1,0 +1,44 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  annotations:
+    name: app-dev
+    golive.apwide.net/cat: "Default Namespace Label"
+    my.company.com/label: "Custom Namespace Label"
+  labels:
+    my.company.com/label: "custom-namespace-label"
+  name: app-dev
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: payment-app
+  namespace: app-dev
+  annotations:
+    golive.apwide.net/cat: "Default Deployment Annotation"
+    golive.apwide.net/CustomAttribute: "Deployment Attribute Value"
+    my.company.com/label: "custom-deployment-annotation"
+  labels:
+    my.company.com/label: "custom-deployment-label"
+spec:
+  selector:
+    matchLabels:
+      app: nginx
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: nginx
+        my.company.com/label: "custom-pod-label"
+      annotations:
+        my.company.com/label: "custom-pod-annotation"
+    spec:
+      containers:
+        - name: nginx
+          image: nginx:1.14.2
+          ports:
+            - containerPort: 80
+          env:
+            - name: MY_ENV_VARIABLE
+              value: "My Env Variable"

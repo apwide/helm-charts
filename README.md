@@ -15,10 +15,8 @@ helm search repo k8s-golive-monitor
 ```
 
 
-## Tools
+# Available Helm Chart
 
-### Unit testing
-
-Using [html-unittest](https://github.com/helm-unittest/helm-unittest)
+* [k8s-golive-monitor](./charts/k8s-golive-monitor/)
 
 
