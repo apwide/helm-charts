@@ -44,7 +44,7 @@ helm show values apwide/k8s-golive-monitor
 
 # Examples
 
-Have a look at our [various examples](./README.md) and publish them on your cluster to see how k8s-golive-monitor can be configured.
+Have a look at our [various examples](./examples/README.md) and publish them on your cluster to see how k8s-golive-monitor can be configured.
 
 # Configuration
 
