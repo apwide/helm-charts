@@ -2,6 +2,28 @@ apiVersion: v1
 entries:
   k8s-golive-monitor:
   - apiVersion: v2
+    appVersion: 0.1.1
+    created: "2024-04-25T11:38:13.962285467Z"
+    description: Your Environment Hub in Jira, fully integrated with your toolchain
+    digest: b02ff5e9bab2493bcde52011a2085db5a4e123ee6519e08e5b928d700ee8036a
+    home: https://www.apwide.com/features/
+    icon: https://raw.githubusercontent.com/apwide/helm-charts/icon/EnvironmentManagerRedLogo.svg
+    keywords:
+    - monitoring
+    - golive
+    - jira
+    - k8s
+    maintainers:
+    - email: julien@apwide.com
+      name: julien
+    name: k8s-golive-monitor
+    sources:
+    - https://github.com/apwide/helm-charts/
+    type: application
+    urls:
+    - https://github.com/apwide/helm-charts/releases/download/k8s-golive-monitor-0.1.1/k8s-golive-monitor-0.1.1.tgz
+    version: 0.1.1
+  - apiVersion: v2
     appVersion: 0.0.3
     created: "2024-04-24T17:36:57.42018663Z"
     description: Your Environment Hub in Jira, fully integrated with your toolchain
@@ -45,4 +67,4 @@ entries:
     urls:
     - https://github.com/apwide/helm-charts/releases/download/k8s-golive-monitor-0.0.3/k8s-golive-monitor-0.0.3.tgz
     version: 0.0.3
-generated: "2024-04-24T17:36:57.420199444Z"
+generated: "2024-04-25T11:38:13.962302189Z"
