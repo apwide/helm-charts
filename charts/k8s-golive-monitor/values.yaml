@@ -1,6 +1,4 @@
 # Default values for k8s-golive-monitor.
-# This is a YAML-formatted file.
-# Declare variables to be passed into your templates.
 
 replicaCount: 1
 
@@ -10,8 +8,8 @@ image:
   # Overrides the image tag whose default is the chart appVersion.
   # tag: "latest"
 
-#imagePullSecrets:
-#  - name: docker-apwide-secret
+imagePullSecrets:
+#  - name: docker-secret
 nameOverride: ""
 fullnameOverride: ""
 
@@ -66,10 +64,6 @@ ingress:
   #      - chart-example.local
 
 resources: {}
-  # We usually recommend not to specify default resources and to leave this as a conscious
-  # choice for the user. This also increases chances charts run on environments with little
-  # resources, such as Minikube. If you do want to specify resources, uncomment the following
-  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
   # limits:
   #   cpu: 100m
   #   memory: 128Mi
@@ -104,17 +98,70 @@ tolerations: []
 affinity: {}
 
 golive:
+  auth:
+    # username/password for Golive Server auth
+    username: ""
+    password: ""
+    # token for Golive cloud auth
+    token: ""
+
+    # existingSecret containing Golive auth
+    existingSecret: ""
+    # tokenKey is the key in the secret containing Golive cloud auth token
+    tokenKey: ""
+    # usernameKey is the key in the secret containing Golive server username
+    usernameKey: ""
+    # usernameKey is the key in the secret containing Golive server password
+    passwordKey: ""
+
   config:
     golive:
-      url: https://golive.apwide.net/api
-#      token: "AAA"
+      # url to cnfigure Golive API base url on your Jira instance when using Golive Server:
+      #   https://[jiraBaseUrl]:[jiraPort]/[jiraContextPath]/rest/apwide/tem/1.1
+      # url: https://golive.apwide.net/api
+
+    # statusMapping maps K8S pod status to Golive Status
+    # Golive statuses can be defined by id and/or by name
+    # When no statusMapping is configured, pod statuses are not tracked.
+    statusMapping:
+      down:
+        # id:
+        # name:
+      up:
+      deploy:
+      failed:
+
+    # listeners array of listener which specify what to track and how to extract and send information to Golive
+    # more configuration examples on: https://apwide.github.io/helm-charts/charts/k8s-golive-monitor/examples/
     listeners:
-      - id: sample-config
-        namespace: default
+      # Simple example
+#      - id: simple-listener
+#        autoCreate: true
 #        category:
-#          value: "Dev"
+#          namespace: true
+#        selectors:
+#          - namespace: default
+#            labels:
+#              my.company.com/monitoring: "k8s-golive-monitor"
+#          - namespace: default
+#            labelQuery: "my.company.com/app in (eCommerce, Payment, CRM)"
+
+      # Complex example
+#      - id: complex-listener
+#        autoCreate: true
+#        category:
+#          namespace: true
+#          annotation: my.company.com/env
 #        application:
-#          label: "Golive"
-        autoCreate: true
+#          label: my.company.com/app
+#          template: "{{ .Value | title }}"
+#        name:
+#          template: |
+#            {{ jsonPath ".spec.template.spec.containers[0].name" }} - {{ label "app" }} ({{ Cat.Name }})
+#        selectors:
+#          - namespace: default
+#            labelQuery: "my.company.com/app in (ERP),app in (Backend)"
+
+
 
 

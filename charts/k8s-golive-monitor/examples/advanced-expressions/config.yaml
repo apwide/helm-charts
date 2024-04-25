@@ -1,0 +1,20 @@
+golive:
+  offline: true
+  yaml: true
+
+listeners:
+  - id: frontend-monitoring
+    selectors:
+      - namespace: app-dev
+    autoCreate: true
+    version:
+      template: "{{ .Value }}-SNAPSHOT"
+    environmentAttributes:
+      - name: Team
+        value: Apwide
+      - name: Environment Parameter
+        fromPath: .spec.template.spec.containers[0].env[?(@.name == 'MY_ENV_VARIABLE')].value
+    name:
+      template: |
+        {{ .App.Name }} - {{ .Cat.Name | lower }} // {{ jsonPath ".spec.template.spec.containers[0].name" }} ({{ label "my.company.com/label" }}) [{{ annotation "my.company.com/label" }}]
+
