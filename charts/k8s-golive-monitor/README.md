@@ -15,7 +15,7 @@ Apwide Golive provides a centralized dashboard for visualizing and tracking envi
 With integrated notifications and approvals in Jira, stakeholders stay informed and can provide quick feedback, reducing delays and accelerating the testing
 process.
 
-Learn more about Apwide Golive: https://www.apwide.com
+Learn more about Apwide Golive: [https://www.apwide.com](https://www.apwide.com)
 
 # How it works
 
@@ -44,7 +44,7 @@ helm show values apwide/k8s-golive-monitor
 
 # Examples
 
-Have a look at our [various examples](./examples/README.md) and publish them on your cluster to see how k8s-golive-monitor can be configured.
+Have a look at our [various examples](https://github.com/apwide/helm-charts/tree/main/charts/k8s-golive-monitor/examples) and publish them on your cluster to see how k8s-golive-monitor can be configured.
 
 # Configuration
 
