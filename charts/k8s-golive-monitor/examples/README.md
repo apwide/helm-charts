@@ -17,22 +17,21 @@ kubectl -n k8s-golive-monitor rollout status deployment k8s-golive-monitor
 kubectl -n k8s-golive-monitor logs -l app=k8s-golive-monitor --tail=50 -f
 ```
 
-## Simple Namespace Status
+## Status
 Let's share the status of your environments with Golive & Jira users.
-Since it's common to use namespaces to categorize environments, let's extract information from them.
 
 ```shell
-kubectl apply -k ./simple-namespace-status
+kubectl apply -k ./status
 kubectl -n k8s-golive-monitor rollout status deployment k8s-golive-monitor
 kubectl -n k8s-golive-monitor logs -l app=k8s-golive-monitor --tail=50 -f
 ```
 
-## Advanced Expressions
-To give you more flexibility in naming your application, category, version, and environment,
-let's explore some examples of advanced expressions that can be used to extract information.
+## Templating
+To give you more flexibility in how to extract application, category, version, and environment information,
+let's explore some examples of advanced templating that can be used to extract information.
 
 ```shell
-kubectl apply -k ./advanced-expressions
+kubectl apply -k ./templating
 kubectl -n k8s-golive-monitor rollout status deployment k8s-golive-monitor
 kubectl -n k8s-golive-monitor logs -l app=k8s-golive-monitor --tail=50 -f
 ```

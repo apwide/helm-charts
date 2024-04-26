@@ -13,11 +13,13 @@ Based on the example [app](../app/app.yaml), here is what will be pushed to Goli
 *null values have been removed for clarity*
 ```yaml
 deployment:
-  deployeddate: "2024-04-24T15:33:18Z"
+  attributes:
+    CustomAttribute: Deployment Deploy Attribute Value
+  deployeddate: "2024-04-26T15:27:50+02:00"
   versionname: 1.14.2
 environment:
   attributes:
-    CustomAttribute: Deployment Attribute Value
+    CustomAttribute: Deployment Environment Attribute Value
   name: payment-app
 environmentselector:
   application:
@@ -29,7 +31,6 @@ environmentselector:
   environment:
     autocreate: true
     name: payment-app
-
 ```
 
 We can see pod has correctly been selected by our selectors.

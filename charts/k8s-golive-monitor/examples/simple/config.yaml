@@ -4,6 +4,6 @@ golive:
 
 listeners:
   - id: frontend-monitoring
+    autoCreate: true
     selectors:
       - namespace: app-dev
-    autoCreate: true

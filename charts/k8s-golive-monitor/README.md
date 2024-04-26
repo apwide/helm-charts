@@ -15,7 +15,7 @@ Apwide Golive provides a centralized dashboard for visualizing and tracking envi
 With integrated notifications and approvals in Jira, stakeholders stay informed and can provide quick feedback, reducing delays and accelerating the testing
 process.
 
-Learn more about Apwide Golive: [https://www.apwide.com](https://www.apwide.com)
+Learn more about Apwide Golive: https://www.apwide.com
 
 # How it works
 
@@ -23,28 +23,42 @@ The controller listens for POD events and, based on configured selectors, determ
 If so, the controller identifies the resource owning the POD (e.g., Deployment, StatefulSet, DaemonSet) and applies various data extraction strategies
 to compile environment information, subsequently sending it to Golive.
 
-# Usage
+# Examples
 
-## Add Repository
+Have a look at our [various examples](https://github.com/apwide/helm-charts/tree/main/charts/k8s-golive-monitor/examples) and publish them on your cluster to see how it works
+
+# Usage from Helm Chart
+Add repo:
 ```shell
 helm repo add apwide https://apwide.github.io/helm-charts
 helm repo update
 ```
+
+Install helm
 ## Install Helm Chart
 ```shell
 helm install [RELEASE_NAME] apwide/k8s-golive-monitr
 ```
 
-# Configuration
 
-Show available options for this chart:
+Configure values.
+By default, the controller runs in offline mode, logging the data that would be sent to Golive. This facilitates initial configuration.
+
+**_Make sure you have selected what you want to track and what data need to be sent before connecting the controller to your Golive instance._**
+
 ````shell
 helm show values apwide/k8s-golive-monitor
 ````
 
-# Examples
-
-Have a look at our [various examples](https://github.com/apwide/helm-charts/tree/main/charts/k8s-golive-monitor/examples) and publish them on your cluster to see how k8s-golive-monitor can be configured.
+Connect controller to your Golive by filling helm auth values:
+```yaml
+golive:
+  auth:
+    token: "XXXX" # Golive API Token
+  config:
+    golive:
+      offline: false
+```
 
 # Configuration
 
@@ -97,9 +111,8 @@ A listener consists of:
 * **autoCreate**: a boolean specifying if targets (application, category, and environment) must be created if they do not exist in Golive and if the call fails.
 * **category**: how to extract/select the category.
 * **application**: how to extract/select the application.
-* **name**: how to extract/select the environment name.
-* **attributes**: what and how to extract environment attribute values.
-* **version**: how to extract the deployment version name.
+* **environment**: how to extract/select the environment information (eg: attributes, url, name...).
+* **deployment**: how to extract the deployment version name.
 * **selectors**: pod selectors used to determine which events match this configuration.
 
 ## Selectors
@@ -124,7 +137,7 @@ Three types of selectors are currently supported:
 A pod must satisfy each criterion (namespace, label, labelQuery) specified in a given selector. However, a listener can have several selectors,
 and a pod must match all the criteria of only one of them. If a pod matches multiple selectors in different listeners, the first declared listener wins.
 
-## Data Extractions
+## Data Identification and Extraction
 
 k8s-golive-monitor listens to pod events and apply **selectors** on it to know if a pod should be monitored.
 However, to extract data, it focuses on the pod owner resource: Deployment, StatefulSet, DaemonSet.
@@ -135,202 +148,132 @@ and applies the extraction rules to it to retrieve application, category, versio
 
 The following sections describes how to extract environment information.
 
-## Category
+## Simple Example
 
-Category section is to extract the environment category name:
+The following example listens for pod events in the **dev** namespace and pushes predefined values for each environment attribute.
+If the application, category, and environment do not exist in Golive, they will be automatically created (**autoCreate**).
+
 ```yaml
 listeners:
-  - id: my-listener
+  - id: hard-coded-example
+    selectors:
+      - namespace: dev
+        labelQuery: "app in (payment-dev)"
+    autoCreate: true
     category:
-      namespace: true
-      value: "Dev"
-      label: "my.company.com/cat"
-      annotation: "my.company.com/env"
-      template: |
-        {{ .Value }} ({{ label "my.company.com/cat"  }})
-```
-
-### Parameters
-* **namespace** : a boolean specifying if we want to search for a label/annotation/template at the namespace level or the owner level (e.g., Deployment).
-* **value** : a hard-coded value taken as is from the configuration.
-* **label** : name taken from the value of this label.
-* **annotation** : value of this annotation is used.
-* **template** : possibility to customize the value with [template expression](#template-expression)
-
-For the template expression, here is the available context element:
-* **Value** : value matched by the previous rule
-
-
-### Precedence
-In case a parameter is specified and doesn't match, an error is raised and data are not sent.
-
-Precedence order to get category name when namespace=true
-1. **value** from config
-2. **label** namespace
-3. **annotation** from namespace
-4. **golive.apwide.net/cat** default label on namespace
-5. **golive.apwide.net/cat** default annotation on namespace
-6. **namespace name** in last resort
-
-Precedence order to get category name when namespace=false
-1. **value** from config
-2. **label** on owning resource
-3. **annotation** on owning resource
-4. **golive.apwide.net/cat** default label on owning resource
-5. **golive.apwide.net/cat** default annotation on owning resource
-
-## Application
-
-Application section is to extract Golive application name:
-```yaml
-listeners:
-  - id: my-listener
+      name: Dev
     application:
-      namespace: true
-      value: "Payment"
-      label: "my.company.com/app"
-      annotation: "my.company.com/env-name"
-      template: |
-        {{ .Value }} ({{ label "my.company.com/app"  }})
+      name: Payment
+    deployment:
+      versionName: latest
+      attributes:
+        - name: Monitored By
+          value: k8s-golive-monitor
+    environment:
+      name: Payment Dev
+      url: http://my.company.com/payment
+      attributes:
+        - name: Team
+          value: My Company
 ```
 
-### Parameters
-* **namespace** : a boolean specifying if we want to search for a label/annotation/template at the namespace level or the owner level (e.g., Deployment).
-* **value** : a hard-coded value taken as is from the configuration.
-* **label** : name taken from the value of this label.
-* **annotation** : value of this annotation is used.
-* **template** : possibility to customize the value with [template expression](#template-expression)
+While this example is straightforward, hard-coding data for every environment we wish to monitor isn't particularly practical.
+Let's explore the next example, which captures dynamic information.
 
-For the template expression, here is the available context element:
-* **Value** : value matched by the previous rule
+*For a more comprehensive understanding of the environment data model, refer to the [Golive documentation](https://golive.apwide.com/doc/latest/cloud/understand-environment-core-concepts)*.
 
-### Precedence
-In case a parameter is specified and doesn't match, an error is raised and data are not sent.
+## Templating
 
-Precedence order to get application name when namespace=true
-1. **value** from config
-2. **label** namespace
-3. **annotation** from namespace
-4. **golive.apwide.net/app** default label on namespace
-5. **golive.apwide.net/app** default annotation on namespace
-6. **namespace name** in last resort
+k8s-golive-monitor employs [golang template](https://pkg.go.dev/text/template) (e.g., {{ .myExpression }})
+to define values for various sections within our environment.
 
-Precedence order to get application name when namespace=false
-1. **value** from config
-2. **label** on owning resource
-3. **annotation** on owning resource
-4. **golive.apwide.net/app** default label on owning resource
-5. **golive.apwide.net/app** default annotation on owning resource
-6. **docker image name** in last resort
-
-## Version
-
-Version section is to extract Golive deployment version name:
+Here's another example demonstrating the use of templating:
 ```yaml
 listeners:
-  - id: my-listener
-    version:
-      ignore: false
-      namespace: true
-      value: "1.0"
-      label: "my.company.com/app"
-      annotation: "my.company.com/env-name"
-      template: |
-        {{ .Value }}-SNAPSHOT
+  - id: template-example
+    selectors:
+      - namespace: dev
+    autoCreate: true
+    category:
+      name: "{{ nsName }}"
+    application:
+      name: "{{ nsDefaultAnnotation }}"
+    deployment:
+      versionName: "{{ mainImageTag }}-SNAPSHOT"
+      attributes:
+        - name: Monitored By
+          value: '{{ nsLabel "my.company.com/monitored-by" }}'
+    environment:
+      name: "{{ .App.Name }} - {{ .Cat.Name }}"
+      url: |
+        {{ jsonPath ".spec.template.spec.containers[0].env[?(@.name=='BASE_URL')].value" }}
+      attributes:
+        - name: Team
+          value: '{{ annotation "my.company.com/owners" }}'
 ```
 
-### Parameters
-* **ignore** : flag to ignore tracking of version/deployment information.
-* **namespace** : a boolean specifying if we want to search for a label/annotation/template at the namespace level or the owner level (e.g., Deployment).
-* **value** : a hard-coded value taken as is from the configuration.
-* **label** : name taken from the value of this label.
-* **annotation** : value of this annotation is used.
-* **template** : possibility to customize the value with [template expression](#template-expression)
+This becomes more beneficial. We've updated the selectors to listen for any pod events in the dev namespace.
+For each event, we dynamically map information to our Golive environment:
+* **category.name**: we load the category name from the namespace name.
+* **application.name**: application name comes from the default annotation, which is for the application *golive.apwide.net/app*
+* **deployment.versionName**: deployment version name comes from the first container image tag with the suffix *-SNAPSHOT*
+* Deployment attributes **Monitored By**: the value of the attribute is taken from the namespace label *my.company.com/monitored-by*
+* **environment.name**: this is the concatenation of the values previously found for application name and category name.
+* **environment.url**: comes from a json path evaluated on the pod owner template (eg: Deployment) which returns the value environment variable named *BASE_URL*
+* Environment attributes **Team**: select the value of annotation *my.company.com/owners*
 
-For the template expression, here is the available context element:
-* **Value** : value matched by the previous rule
+We can observe that we can now retrieve various environment information using a single template.
+To streamline access to this information, templates have been enriched with various [utility functions](#template-expression), such as **jsonPath**,
+which are detailed below.
 
-### Precedence
-In case a parameter is specified and doesn't match, an error is raised and data are not sent.
+Each function is assessed on the resource owning a pod, such as Deployment, StatefulSet, or DaemonSet.
+Additionally, there are equivalent functions prefixed with **ns** to be assessed on the namespace (e.g. **nsJsonPath**).
 
-Precedence order to get version name when namespace=true
-1. **value** from config
-2. **label** namespace
-3. **annotation** from namespace
-4. **golive.apwide.net/app** default label on namespace
-5. **golive.apwide.net/app** default annotation on namespace
-6. **namespace name** in last resort
+Currently, standalone pods and Jobs are not supported, and events related to them will be disregarded.
 
-Precedence order to get application name when namespace=false
-1. **value** from config
-2. **label** on owning resource
-3. **annotation** on owning resource
-4. **golive.apwide.net/app** default label on owning resource
-5. **golive.apwide.net/app** default annotation on owning resource
-6. **docker image version** in last resort
+Some of these functions make reference to **defaultLabel** or **defaultAnnotation**,
+which are special [Golive label/annotation](#default-annotations) that you can add to your resources.
+These labels/annotations will be automatically processed as described below.
 
-## Name
-Name section is to extract Golive environment name:
-```yaml
-listeners:
-  - id: my-listener
-    name:
-      namespace: true
-      value: "1.0"
-      label: "my.company.com/app"
-      annotation: "my.company.com/env-name"
-      template: |
-        {{ .Value }}-SNAPSHOT
-```
+### Default Values
 
-### Parameters
-* **namespace** : boolean to specify if we want to search for label/annotation/template at namespace level or owner (eg: Deployment)
-* **value** : hard-coded value taken as is from the configuration
-* **label** : name taken from value of this label
-* **annotation** : value of this annotation used
-* **template** : possibility to customize the value with [template expression](#template-expression)
+For certain environment information, when no configuration is set,
+the controller attempts to infer the value autonomously by applying a series of templates successfully:
 
-For the template expression, here is the available context element:
-* **Value** : value matched by the previous rule
-* **App.Name** : application name as processed by previous section
-* **Cat.Name** : category name as processed by previous section
+#### Application Name
 
-### Precedence
-In case a parameter is specified and doesn't match, an error is raised and data are not sent.
+1. **{{ defaultLabel }}** : value of *golive.apwide.net/app* on the resource
+2. **{{ defaultAnnotation }}**: value of *golive.apwide.net/app* on the resource
+3. **{{ mainImageName }}**: image name extracted from the first container image
 
-Precedence order to get environment name when namespace=true
-1. **value** from config
-2. **label** namespace
-3. **annotation** from namespace
-4. **golive.apwide.net/app** default label on namespace
-5. **golive.apwide.net/app** default annotation on namespace
-6. **namespace name**
+#### Category Name
 
-Precedence order to get environment name when namespace=false
-1. **value** from config
-2. **label** on owning resource
-3. **annotation** on owning resource
-4. **golive.apwide.net/app** default label on owning resource
-5. **golive.apwide.net/app** default annotation on owning resource
-6. **owning resource name** in last resort
+1. **{{ defaultLabel }}** : value of *golive.apwide.net/cat* on the resource
+2. **{{ defaultAnnotation }}**: value of *golive.apwide.net/cat* on the resource
+3. **{{ nsDefaultLabel }}** : value of *golive.apwide.net/cat* on the namespace
+4. **{{ nsDefaultAnnotation }}**: value of *golive.apwide.net/cat* on the namespace
+5. **{{ nsName }}**: name of the namespace
 
-## Environment Attributes
-An array of expression to extract environment attributes:
-```yaml
-listeners:
-  - id: my-listener
-    environmentAttributes:
-      - name: Team
-        value: Apwide
-      - name: Environment Variable
-        fromPath: .spec.template.spec.containers[0].env[?(@.name == 'MY_ENV_VARIABLE')].value
-```
+#### Environment Name
 
-### Parameters
+1. **{{ defaultLabel }}** : value of *golive.apwide.net/environment* on the resource
+2. **{{ defaultAnnotation }}**: value of *golive.apwide.net/environment* on the resource
+3. **{{ nsDefaultLabel }}** : value of *golive.apwide.net/environment* on the namespace
+4. **{{ nsDefaultAnnotation }}**: value of *golive.apwide.net/environment* on the namespace
+5. **{{ name }}**: name of the resource
 
-* **name**: name of the attribute. (attribute must exists into Golive)
-* **value**: configuration hard-coded value for the given attribute.
-* **fromPath**: json path expression evaluated on owning resource
+#### Environment Url
+
+1. **{{ defaultLabel }}** : value of *golive.apwide.net/url* on the resource
+2. **{{ defaultAnnotation }}**: value of *golive.apwide.net/url* on the resource
+3. **{{ nsDefaultLabel }}** : value of *golive.apwide.net/url* on the namespace
+4. **{{ nsDefaultAnnotation }}**: value of *golive.apwide.net/url* on the namespace
+
+#### Deployment Version Name
+
+1. **{{ defaultLabel }}** : value of *golive.apwide.net/version* on the resource
+2. **{{ defaultAnnotation }}**: value of *golive.apwide.net/version* on the resource
+3. **{{ mainImageTag }}**: image tag extracted from the first container image
 
 ## Status
 To track environment statuses, you must map operator statuses to Golive statuses.
@@ -365,6 +308,28 @@ In addition to the standard Go template functions, the following additional ones
 * **annotation** : read annotation value from the owned resource
 * **label** : read label value from the owned resource
 * **jsonPath** : evaluate the jsonPath expression on the owned resource
+* **mainImageName** : docker image name of first container
+* **mainImageTag** : docker image version of first container
+* **defaultLabel** : search for golive.apwide.net/XXX label where XXX depends on type of data search for [(eg: app, cat, name...)](#default-annotations)
+* **defaultAnnotation** : search for golive.apwide.net/XXX annotation where XXX depends on type of data search for [(eg: app, cat, name...)](#default-annotations)
+* **nsDefaultLabel** : default label on namespace [(eg: app, cat, name...)](#default-annotations)
+* **nsDefaultAnnotation** : default annotation on namespace [(eg: app, cat, name...)](#default-annotations)
+* **nsJsonPath** : jsonPath evaluated on namespace
+* **nsName** : name of the namespace
+* **name** : name of the owning resource
+
+
+## Default annotations
+
+Here is a set of default annotations which can be set on pod owner resource or namespace which are used in case no template value is provided or
+if they are requested by specific template functions: (eg: defaultLabel, defaultAnnotation, nsDefaultLabel, nsDefaultAnnotation)
+* golive.apwide.net/app : application
+* golive.apwide.net/cat : category
+* golive.apwide.net/environment : environment name
+* golive.apwide.net/url: environment url
+* golive.apwide.net/version: version name
+* env.golive.apwide.net/XXX : environment attribute where XXX is the name of the attribute
+* deploy.golive.apiwde.net/XXX : deployment attribute where XXX is the name of the attribute
 
 ## Environment Variables
 

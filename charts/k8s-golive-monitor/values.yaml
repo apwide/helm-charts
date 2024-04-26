@@ -116,6 +116,11 @@ golive:
 
   config:
     golive:
+      ####################################################################################
+      ## Do not disable offline mode before having configured correctly your listeners !!!
+      ## To avoid noise of data into Golive, first, restrict what you want to push
+      ####################################################################################
+      offline: true
       # url to cnfigure Golive API base url on your Jira instance when using Golive Server:
       #   https://[jiraBaseUrl]:[jiraPort]/[jiraContextPath]/rest/apwide/tem/1.1
       # url: https://golive.apwide.net/api
@@ -134,11 +139,12 @@ golive:
     # listeners array of listener which specify what to track and how to extract and send information to Golive
     # more configuration examples on: https://apwide.github.io/helm-charts/charts/k8s-golive-monitor/examples/
     listeners:
+      - id: all
       # Simple example
 #      - id: simple-listener
 #        autoCreate: true
 #        category:
-#          namespace: true
+#          name: "{{ nsName }}"
 #        selectors:
 #          - namespace: default
 #            labels:
@@ -150,14 +156,11 @@ golive:
 #      - id: complex-listener
 #        autoCreate: true
 #        category:
-#          namespace: true
-#          annotation: my.company.com/env
+#          name: '{{ nsAnnotation "my.company.com/env" }}'
 #        application:
-#          label: my.company.com/app
-#          template: "{{ .Value | title }}"
-#        name:
-#          template: |
-#            {{ jsonPath ".spec.template.spec.containers[0].name" }} - {{ label "app" }} ({{ Cat.Name }})
+#          name: '{{ label "my.company.com/app" | title }}'
+#        environment:
+#          name: '{{ jsonPath ".spec.template.spec.containers[0].name" }} - {{ label "app" }} ({{ Cat.Name }})'
 #        selectors:
 #          - namespace: default
 #            labelQuery: "my.company.com/app in (ERP),app in (Backend)"
