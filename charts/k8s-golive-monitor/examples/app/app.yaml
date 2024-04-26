@@ -17,7 +17,8 @@ metadata:
   namespace: app-dev
   annotations:
     golive.apwide.net/cat: "Default Deployment Annotation"
-    golive.apwide.net/CustomAttribute: "Deployment Attribute Value"
+    env.golive.apwide.net/CustomAttribute: "Deployment Environment Attribute Value"
+    deploy.golive.apwide.net/CustomAttribute: "Deployment Deploy Attribute Value"
     my.company.com/label: "custom-deployment-annotation"
   labels:
     my.company.com/label: "custom-deployment-label"

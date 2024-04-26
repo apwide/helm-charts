@@ -17,7 +17,3 @@ listeners:
     selectors:
       - namespace: app-dev
     autoCreate: true
-    category:
-      namespace: true
-    application:
-      label: "my.company.com/label"
