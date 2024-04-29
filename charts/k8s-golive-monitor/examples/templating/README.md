@@ -10,26 +10,26 @@ Based on the example [app](../app/app.yaml), here is what will be pushed to Goli
 *null values have been removed for clarity*
 ```yaml
 deployment:
-  attributes:
-    CustomAttribute: Deployment Deploy Attribute Value
-  deployeddate: "2024-04-26T15:28:26+02:00"
-  versionname: 1.14.2
+    attributes:
+        CustomAttribute: Deployment Deploy Attribute Value
+    deployeddate: "2024-04-29T08:02:46+02:00"
+    versionname: 1.14.2-SNAPSHOT
 environment:
-  attributes:
-    CustomAttribute: Deployment Environment Attribute Value
-    Environment Parameter: My Env Variable
-    Team: Apwide
-  name: nginx - custom-namespace-label // nginx (custom-deployment-label) [custom-deployment-annotation]
-environmentselector:
-  application:
-    autocreate: true
-    name: nginx
-  category:
-    autocreate: true
-    name: custom-namespace-label
-  environment:
-    autocreate: true
+    attributes:
+        CustomAttribute: Deployment Environment Attribute Value
+        Environment Parameter: My Env Variable
+        Team: Apwide
     name: nginx - custom-namespace-label // nginx (custom-deployment-label) [custom-deployment-annotation]
+environmentselector:
+    application:
+        autocreate: true
+        name: nginx
+    category:
+        autocreate: true
+        name: custom-namespace-label
+    environment:
+        autocreate: true
+        name: nginx - custom-namespace-label // nginx (custom-deployment-label) [custom-deployment-annotation]
 ```
 
 We can see:

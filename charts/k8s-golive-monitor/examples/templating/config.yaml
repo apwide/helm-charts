@@ -7,8 +7,8 @@ listeners:
     selectors:
       - namespace: app-dev
     autoCreate: true
-    version:
-      value: "{{ mainImageTag }}-SNAPSHOT"
+    deployment:
+      versionName: "{{ mainImageTag }}-SNAPSHOT"
     category:
       name: '{{ nsLabel "my.company.com/label" }}'
     environment:
