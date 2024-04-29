@@ -61,3 +61,20 @@ tests:
       - equal:
           path: spec.template.spec.containers[0].env[?(@.name == 'GOLIVE_TOKEN')].valueFrom.secretKeyRef.key
           value: token
+  - it: should support image args
+    set:
+      image.args:
+        - "-v=6"
+        - "-kubeconfig=/etc/test.yaml"
+#      image.args: "{-v=6,-kubeconfig=/etc/test.yaml}"
+#      image.args[0]: "-v=6"
+#      image.args[1]: "-kubeconfig=/etc/test.yaml"
+    asserts:
+      - isKind:
+          of: Deployment
+      - equal:
+          path: spec.template.spec.containers[0].args[0]
+          value: "-v=6"
+      - equal:
+          path: spec.template.spec.containers[0].args[1]
+          value: "-kubeconfig=/etc/test.yaml"

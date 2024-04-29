@@ -38,6 +38,12 @@ spec:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          {{- if .Values.image.args  }}
+          args:
+            {{- range .Values.image.args }}
+            - {{ . | quote }}
+            {{- end }}
+          {{ end }}
           env:
           {{- if .Values.golive.auth.existingSecret }}
           {{- if .Values.golive.auth.usernameKey }}
