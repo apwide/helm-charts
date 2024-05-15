@@ -2,15 +2,15 @@
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: {{ include "k8s-golive-monitor.fullname" . }}
+  name: {{ include "k8s-golive-agent.fullname" . }}
   namespace: {{ .Release.Namespace }}
   labels:
-    {{- include "k8s-golive-monitor.labels" . | nindent 4 }}
+    {{- include "k8s-golive-agent.labels" . | nindent 4 }}
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: {{ include "k8s-golive-monitor.fullname" . }}
+    name: {{ include "k8s-golive-agent.fullname" . }}
   minReplicas: {{ .Values.autoscaling.minReplicas }}
   maxReplicas: {{ .Values.autoscaling.maxReplicas }}
   metrics:

@@ -32,7 +32,7 @@ environmentselector:
 We can see:
 * **autoCreate** is requested to create app/cat/environment if not existing into Golive.
 * **environment.attributes** has been populated with the value of the annotation **golive.apwide.net/CustomAttribute** located on the Deployment
-* **category.name** has been populated by k8s-golive-monitor default annotation **golive.apwide.net/cat** located on the Deployment
+* **category.name** has been populated by k8s-golive-agent default annotation **golive.apwide.net/cat** located on the Deployment
 * **application.name** comes from docker image because no **application** has been configured
 * **deployment.versionname** has been taken from docker image version
 * **environment.name** is loaded from Deployment name because no configuration has been provided

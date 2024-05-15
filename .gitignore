@@ -2,4 +2,4 @@
 .env
 **/config-local.yaml
 local/
-**/k8s-golive-monitor-*tgz
+**/k8s-golive-agent-*tgz

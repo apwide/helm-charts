@@ -1,6 +1,6 @@
-# k8s-golive-monitor
+# k8s-golive-agent
 
-k8s-golive-monitor is a Kubernetes controller designed to manage environment information within your Kubernetes cluster,
+k8s-golive-agent is a Kubernetes controller designed to manage environment information within your Kubernetes cluster,
 including deployed version tracking and the statuses of deployments, stateful sets, and daemon sets.
 It facilitates the publication of this data to Apwide Golive for Jira.
 
@@ -25,7 +25,7 @@ to compile environment information, subsequently sending it to Golive.
 
 # Examples
 
-Have a look at our [various examples](https://github.com/apwide/helm-charts/tree/main/charts/k8s-golive-monitor/examples) and publish them on your cluster to see how it works
+Have a look at our [various examples](https://github.com/apwide/helm-charts/tree/main/charts/k8s-golive-agent/examples) and publish them on your cluster to see how it works
 
 # Usage from Helm Chart
 Add repo:
@@ -47,7 +47,7 @@ By default, the controller runs in offline mode, logging the data that would be 
 **_Make sure you have selected what you want to track and what data need to be sent before connecting the controller to your Golive instance._**
 
 ````shell
-helm show values apwide/k8s-golive-monitor
+helm show values apwide/k8s-golive-agent
 ````
 
 Connect controller to your Golive by filling helm auth values:
@@ -139,11 +139,11 @@ and a pod must match all the criteria of only one of them. If a pod matches mult
 
 ## Data Identification and Extraction
 
-k8s-golive-monitor listens to pod events and apply **selectors** on it to know if a pod should be monitored.
+k8s-golive-agent listens to pod events and apply **selectors** on it to know if a pod should be monitored.
 However, to extract data, it focuses on the pod owner resource: Deployment, StatefulSet, DaemonSet.
 Only these three are currently supported (Jobs, single Pods, etc., are ignored).
 
-When a pod matches a selector, k8s-golive-monitor finds the owning resource
+When a pod matches a selector, k8s-golive-agent finds the owning resource
 and applies the extraction rules to it to retrieve application, category, version, etc.
 
 The following sections describes how to extract environment information.
@@ -168,7 +168,7 @@ listeners:
       versionName: latest
       attributes:
         - name: Monitored By
-          value: k8s-golive-monitor
+          value: k8s-golive-agent
     environment:
       name: Payment Dev
       url: http://my.company.com/payment
@@ -184,7 +184,7 @@ Let's explore the next example, which captures dynamic information.
 
 ## Templating
 
-k8s-golive-monitor employs [golang template](https://pkg.go.dev/text/template) (e.g., {{ .myExpression }})
+k8s-golive-agent employs [golang template](https://pkg.go.dev/text/template) (e.g., {{ .myExpression }})
 to define values for various sections within our environment.
 
 Here's another example demonstrating the use of templating:

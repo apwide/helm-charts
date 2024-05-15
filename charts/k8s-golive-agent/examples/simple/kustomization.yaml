@@ -6,7 +6,7 @@ resources:
   - ../base
 
 configMapGenerator:
-  - name: k8s-golive-monitor
-    namespace: k8s-golive-monitor
+  - name: k8s-golive-agent
+    namespace: k8s-golive-agent
     files:
       - config.yaml

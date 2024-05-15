@@ -1,9 +1,9 @@
-# Default values for k8s-golive-monitor.
+# Default values for k8s-golive-agent.
 
 replicaCount: 1
 
 image:
-  repository: apwide/k8s-golive-monitor
+  repository: apwide/k8s-golive-agent
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
   # tag: "latest"
@@ -138,7 +138,7 @@ golive:
       failed:
 
     # listeners array of listener which specify what to track and how to extract and send information to Golive
-    # more configuration examples on: https://apwide.github.io/helm-charts/charts/k8s-golive-monitor/examples/
+    # more configuration examples on: https://apwide.github.io/helm-charts/charts/k8s-golive-agent/examples/
     listeners:
       - id: all
       # Simple example
@@ -149,7 +149,7 @@ golive:
 #        selectors:
 #          - namespace: default
 #            labels:
-#              my.company.com/monitoring: "k8s-golive-monitor"
+#              my.company.com/monitoring: "k8s-golive-agent"
 #          - namespace: default
 #            labelQuery: "my.company.com/app in (eCommerce, Payment, CRM)"
 

@@ -34,13 +34,13 @@ jobs:
 
       - id: test
         run: |
-          helm unittest ./charts/k8s-golive-monitor
+          helm unittest ./charts/k8s-golive-agent
 
       - id: release
         uses: helm/chart-releaser-action@v1.6.0
         if: ${{ github.ref == 'refs/heads/main' }}
 #        with:
-#          charts_dir: deployments/charts/k8s-golive-monitor
+#          charts_dir: deployments/charts/k8s-golive-agent
         env:
           CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
           CR_GENERATE_RELEASE_NOTES: false

@@ -2,9 +2,9 @@
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
-  name: {{ include "k8s-golive-monitor.fullname" . }}
+  name: {{ include "k8s-golive-agent.fullname" . }}
   labels:
-    {{- include "k8s-golive-monitor.labels" . | nindent 4 }}
+    {{- include "k8s-golive-agent.labels" . | nindent 4 }}
 rules:
   - apiGroups:
       - ""

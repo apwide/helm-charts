@@ -11,12 +11,12 @@ helm repo update
 
 Search for a chart:
 ```shell
-helm search repo k8s-golive-monitor
+helm search repo k8s-golive-agent
 ```
 
 
 # Available Helm Chart
 
-* [k8s-golive-monitor](./charts/k8s-golive-monitor/)
+* [k8s-golive-agent](./charts/k8s-golive-agent/)
 
 

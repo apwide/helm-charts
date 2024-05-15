@@ -13,8 +13,8 @@ One of the simplest configurations is to delegate most of the data extraction to
 
 ```shell
 kubectl apply -k ./simple
-kubectl -n k8s-golive-monitor rollout status deployment k8s-golive-monitor
-kubectl -n k8s-golive-monitor logs -l app=k8s-golive-monitor --tail=50 -f
+kubectl -n k8s-golive-agent rollout status deployment k8s-golive-agent
+kubectl -n k8s-golive-agent logs -l app=k8s-golive-agent --tail=50 -f
 ```
 
 ## Status
@@ -22,8 +22,8 @@ Let's share the status of your environments with Golive & Jira users.
 
 ```shell
 kubectl apply -k ./status
-kubectl -n k8s-golive-monitor rollout status deployment k8s-golive-monitor
-kubectl -n k8s-golive-monitor logs -l app=k8s-golive-monitor --tail=50 -f
+kubectl -n k8s-golive-agent rollout status deployment k8s-golive-agent
+kubectl -n k8s-golive-agent logs -l app=k8s-golive-agent --tail=50 -f
 ```
 
 ## Templating
@@ -32,8 +32,8 @@ let's explore some examples of advanced templating that can be used to extract i
 
 ```shell
 kubectl apply -k ./templating
-kubectl -n k8s-golive-monitor rollout status deployment k8s-golive-monitor
-kubectl -n k8s-golive-monitor logs -l app=k8s-golive-monitor --tail=50 -f
+kubectl -n k8s-golive-agent rollout status deployment k8s-golive-agent
+kubectl -n k8s-golive-agent logs -l app=k8s-golive-agent --tail=50 -f
 ```
 
 ## Selectors
@@ -42,7 +42,7 @@ you want to keep track of, or if you want to apply specific data extraction poli
 
 ```shell
 kubectl apply -k ./selectors
-kubectl -n k8s-golive-monitor rollout status deployment k8s-golive-monitor
-kubectl -n k8s-golive-monitor logs -l app=k8s-golive-monitor --tail=50 -f
+kubectl -n k8s-golive-agent rollout status deployment k8s-golive-agent
+kubectl -n k8s-golive-agent logs -l app=k8s-golive-agent --tail=50 -f
 ```
 

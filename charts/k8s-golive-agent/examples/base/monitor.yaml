@@ -2,30 +2,30 @@ apiVersion: v1
 kind: Namespace
 metadata:
   annotations:
-    name: k8s-golive-monitor
+    name: k8s-golive-agent
   labels:
-    app: k8s-golive-monitor
-  name: k8s-golive-monitor
+    app: k8s-golive-agent
+  name: k8s-golive-agent
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: k8s-golive-monitor
-  namespace: k8s-golive-monitor
+  name: k8s-golive-agent
+  namespace: k8s-golive-agent
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: k8s-golive-monitor
+      app: k8s-golive-agent
   template:
     metadata:
       labels:
-        app: k8s-golive-monitor
+        app: k8s-golive-agent
     spec:
-      serviceAccountName: k8s-golive-monitor
+      serviceAccountName: k8s-golive-agent
       containers:
         - name: app
-          image: apwide/k8s-golive-monitor:latest
+          image: apwide/k8s-golive-agent:latest
           imagePullPolicy: Always
           ports:
             - name: http
@@ -48,5 +48,5 @@ spec:
         - name: config
           configMap:
             defaultMode: 511
-            name: k8s-golive-monitor
+            name: k8s-golive-agent
             optional: false

@@ -1,5 +1,5 @@
 apiVersion: v2
-name: k8s-golive-monitor
+name: k8s-golive-agent
 description: Your Environment Hub in Jira, fully integrated with your toolchain
 
 keywords:
