@@ -1,5 +1,0 @@
-1. Check if application is working
-kubectl --namespace {{ .Release.Namespace }} get pods
-kubectl --namespace {{ .Release.Namespace }} logs -f -l="app.kubernetes.io/name=k8s-golive-monitor"
-
-Open Golive and check if data are pushed to it

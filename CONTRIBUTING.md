@@ -5,5 +5,5 @@ helm package .
 
 Install
 ```shell
-helm -n default install k8s-golive-monitor ./k8s-monitor-X.X.X.tgz --values values.yaml
+helm -n default install k8s-golive-agent ./k8s-golive-agent-X.X.X.tgz --values values.yaml
 ```
