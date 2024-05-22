@@ -37,7 +37,7 @@ helm repo update
 Install helm
 ## Install Helm Chart
 ```shell
-helm install [RELEASE_NAME] apwide/k8s-golive-monitr
+helm install [RELEASE_NAME] apwide/k8s-golive-agent
 ```
 
 
