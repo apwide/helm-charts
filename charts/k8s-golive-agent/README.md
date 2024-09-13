@@ -302,9 +302,11 @@ statusMapping:
 In various parts of the configuration, [Go template expression](https://pkg.go.dev/text/template) can be used to transform values before sending them to Golive.
 
 In addition to the standard Go template functions, the following additional ones are provided:
-* **title** : https://pkg.go.dev/strings#ToTitle
-* **lower** : https://pkg.go.dev/strings#ToLower
-* **upper** : https://pkg.go.dev/strings#ToUpper
+* **title** : https://pkg.go.dev/golang.org/x/text/cases#Title
+* **lower** : https://pkg.go.dev/golang.org/x/text/cases#Lower
+* **upper** : https://pkg.go.dev/golang.org/x/text/cases#Upper
+* **cutPrefix** : https://pkg.go.dev/strings#CutPrefix (usage: {{ cutPrefix "MyApp"  "My" }})
+* **cutSuffix** : https://pkg.go.dev/strings#CutSuffix (usage: {{ cutSuffix "WebApp" "App" }})
 * **annotation** : read annotation value from the owned resource
 * **label** : read label value from the owned resource
 * **jsonPath** : evaluate the jsonPath expression on the owned resource
