@@ -129,13 +129,13 @@ golive:
     # statusMapping maps K8S pod status to Golive Status
     # Golive statuses can be defined by id and/or by name
     # When no statusMapping is configured, pod statuses are not tracked.
-    statusMapping:
-      down:
-        # id:
-        # name:
-      up:
-      deploy:
-      failed:
+#    statusMapping:
+#      down:
+#        # id:
+#        # name:
+#      up:
+#      deploy:
+#      failed:
 
     # listeners array of listener which specify what to track and how to extract and send information to Golive
     # more configuration examples on: https://apwide.github.io/helm-charts/charts/k8s-golive-agent/examples/
