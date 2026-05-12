@@ -26,7 +26,7 @@ jobs:
       - id: setup-helm
         uses: azure/setup-helm@v4
         with:
-          version: v3.12.0
+          version: v3.20.0
 
       - id: install-unittest
         run: |
@@ -37,7 +37,7 @@ jobs:
           helm unittest ./charts/k8s-golive-agent
 
       - id: release
-        uses: helm/chart-releaser-action@v1.6.0
+        uses: helm/chart-releaser-action@v1.7.0
         if: ${{ github.ref == 'refs/heads/main' }}
 #        with:
 #          charts_dir: deployments/charts/k8s-golive-agent
