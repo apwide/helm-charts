@@ -1,6 +1,7 @@
 # Default values for k8s-golive-agent.
 
 replicaCount: 1
+revisionHistoryLimit: 10
 
 image:
   repository: apwide/k8s-golive-agent
